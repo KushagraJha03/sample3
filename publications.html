@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASLab - Publications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #ffffff;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(251, 251, 251, 0.65);
+            padding: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #f0f0f0;
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #2c5364;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            padding: 0.6rem 1rem;
+            border-radius: 5px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.8);
+            color: #2c5364;
+        }
+
+        .nav-item-dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: white;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            top: 100%;
+            left: 0;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 0.8rem 1.2rem;
+            text-transform: none;
+        }
+
+        .nav-item-dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #333;
+            transition: 0.3s;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        /* Publications Container */
+        .publications-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .note {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 3rem;
+        }
+
+        /* Year Section */
+        .year-section {
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .year-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .year-header:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #663a8b 100%);
+        }
+
+        .year-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .year-circle::before {
+            content: '+';
+            position: absolute;
+        }
+
+        .year-circle.active::before {
+            content: '−';
+        }
+
+        .year-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .year-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            background: #fafafa;
+        }
+
+        .year-content.active {
+            max-height: 20000px;
+            transition: max-height 1s ease-in;
+        }
+
+        .year-content-inner {
+            padding: 2rem;
+        }
+
+        /* Publication Card */
+        .publication-card {
+            background: white;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .publication-card:hover {
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.15);
+            transform: translateX(5px);
+        }
+
+        .pub-authors {
+            color: #2c5364;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .pub-title {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .pub-journal {
+            color: #666;
+            font-style: italic;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .pub-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .pub-link {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.3rem 0.8rem;
+            border: 1px solid #667eea;
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+
+        .pub-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        /* Coverage Box */
+        .coverage-box {
+            background: #f0f4ff;
+            border-left: 3px solid #667eea;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 5px;
+        }
+
+        .coverage-box h4 {
+            color: #2c5364;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .coverage-box p {
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .coverage-box a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .coverage-box a:hover {
+            text-decoration: underline;
+        }
+
+        /* Thesis Section */
+        .thesis-section {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .thesis-section h3 {
+            font-size: 1.8rem;
+            color: #2c5364;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #2c5364;
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+
+        footer h4 {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                flex-direction: column;
+                width: 100%;
+                padding: 10px 0;
+                text-align: center;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(4px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                border-top: 1px solid #eee;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links li {
+                padding: 12px 0;
+            }
+
+            .dropdown-content {
+                position: static;
+                box-shadow: none;
+                background: rgba(255, 255, 255, 0.98);
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .year-title {
+                font-size: 1.4rem;
+            }
+
+            .year-content-inner {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">ASLab</div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="#research">RESEARCH</a></li>
+                <li><a href="publications.html">PUBLICATIONS</a></li>
+                <li><a href="#people">PEOPLE</a></li>
+                <li class="nav-item-dropdown">
+                    <a href="#resources">RESOURCES</a>
+                    <div class="dropdown-content">
+                        <a href="#software">Software</a>
+                        <a href="#database">Database and Webservice</a>
+                        <a href="#infrastructure">Computational Infrastructure</a>
+                    </div>
+                </li>
+                <li><a href="#collaborators">COLLABORATORS</a></li>
+                <li><a href="#contact">CONTACT</a></li>
+                <li class="nav-item-dropdown">
+                    <a href="#more">MORE</a>
+                    <div class="dropdown-content">
+                        <a href="#organization">Organization</a>
+                        <a href="#funding">Funding</a>
+                        <a href="#opportunity">Opportunity</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <section class="page-header">
+        <h1>Publications</h1>
+        <!--<p>Research output from ASLab | Journals & Conference Proceedings</p>-->
+    </section>
+
+    <!-- Publications Container -->
+    <div class="publications-container">
+         <!-- Publications Container 
+        <p class="note">
+            * Corresponding Author(s) | # Equal Contribution
+        </p>
+    -->
+
+        <!-- 2025 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2025</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">P. Elumalai#, S. Vijayaraghavan#, M. Mondal*, A. Samal*</div>
+                        <div class="pub-title">Application of discrete Ricci curvature in pruning randomly wired neural networks: A case study with chest x-ray classification of COVID-19</div>
+                        <div class="pub-journal">arXiv:2509.05322</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">P. Sanyal#, J. Uppada#, S. Sinha, Y. Bhat, S. Khan, S.V. Rajaram, E.V. Arokiyaraj, G.D. Jhingan, N. Agarwal, A. Samal*, V.K. Nandicoori*</div>
+                        <div class="pub-title">Sec and Tat mediated secretion safeguards Mycobacterium tuberculosis membrane homeostasis</div>
+                        <div class="pub-journal">bioRxiv 2025.09.04.674216</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">N. Chivukula, S.R. Madgaonkar, S.R. Marigoudar, K.V. Sharma, V. Kishore, A.V. Singh*, A. Samal*</div>
+                        <div class="pub-title">TICToK: A comprehensive knowledgebase of tattoo ink chemicals and investigation of their associated toxicities and regulations</div>
+                        <div class="pub-journal">bioRxiv 2025.08.02.668261</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to TICToK</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">P. Sil, O.C. Martin*, A. Samal*</div>
+                        <div class="pub-title">Simple threshold-based Boolean rules fall short in capturing biological regulatory network dynamics</div>
+                        <div class="pub-journal">bioRxiv 2025.06.26.661727</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">M. Mondal, Y. Yadav, J. Jost*, A. Samal*</div>
+                        <div class="pub-title">Node persistence from topological data analysis reveals changes in brain functional connectivity</div>
+                        <div class="pub-journal">bioRxiv 2025.05.23.655816</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Biswas, N. Saini, N. Chivukula, A. Samal, M.B. Ihannat, P. Bhadury & G.K. Darbha*</div>
+                        <div class="pub-title">The Dawn of New Air Pollutant and Vector Danger of Inhalable Microplastics</div>
+                        <div class="pub-journal">submitted</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">S. Sankar#, A.K. Sahoo#, S.P. Baskaran, R. Babu, S. Srivastava*, A. Samal*</div>
+                        <div class="pub-title">Computational prediction of cyclotides from Viola odorata as potential inhibitors against the neuraminidase of Streptococcus pneumoniae</div>
+                        <div class="pub-journal">Molecular Diversity (2025)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">S.P. Baskaran, G. Ranganathan, A.K. Sahoo, K. Kumar, J. Amaresan, K. Ramesh, R.P. Vivek-Ananth, A. Samal*</div>
+                        <div class="pub-title">sCentInDB: A database of essential oil chemical profiles of Indian medicinal plants</div>
+                        <div class="pub-journal">Molecular Diversity (2025)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to sCentInDB</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">P. Sil, S. Mitra, O.C. Martin*, A. Samal*</div>
+                        <div class="pub-title">Choices of regulatory logic class modulate the dynamical regime in random Boolean networks</div>
+                        <div class="pub-journal">Chaos, Solitons & Fractals, 195: 116231 (2025)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">S.P. Baskaran#, J. Ravichandran#, P. Shree, V. Thengumthottathil, B.S. Karthikeyan*, A. Samal*</div>
+                        <div class="pub-title">UVREK: Development and analysis of an expression profile knowledgebase of biomolecules induced by ultraviolet radiation exposure</div>
+                        <div class="pub-journal">ACS Omega, 10(2): 1927-1942 (2025)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to UVREK</a>
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2024 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2024</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">N. Chivukula#, S.R. Madgaonkar#, K. Ramesh, S. Marigoudar, S.R. Marigoudar, K.V. Sharma, A. Samal*</div>
+                        <div class="pub-title">Network toxicology focused investigation on the impacts of inorganic arsenic and cadmium on human and ecosystem health</div>
+                        <div class="pub-journal">bioRxiv 2024.11.18.624172</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to HeavyMetalTox</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A.K. Sahoo#, S.R. Madgaonkar#, N. Chivukula, P. Karthikeyan, K. Ramesh, S.R. Marigoudar, K.V. Sharma, A. Samal*</div>
+                        <div class="pub-title">Network-based investigation of petroleum hydrocarbons-induced ecotoxicological effects and their risk assessment</div>
+                        <div class="pub-journal">Environment International, 194: 109163 (2024)</div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>The Times of India: <a href="#">Oil spills and industrial waste in rivers and coasts put marine life and human health at risk</a></p>
+                            <p>IMSc Newsletter: <a href="#">Computational tools reveal ecological effects of pervasive pollutants</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A.K. Sahoo#, N. Chivukula#, S.R. Madgaonkar, K. Ramesh, S.R. Marigoudar, K.V. Sharma, A. Samal*</div>
+                        <div class="pub-title">Leveraging integrative toxicogenomic approach towards development of stressor-centric adverse outcome pathway networks for plastic additives</div>
+                        <div class="pub-journal">Archives of Toxicology, 98: 3299-3321 (2024)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to sAOPadditives</a>
+                        </div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>Nature India: <a href="#">Using maths to identify health risks from plastics</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">S. Kulkarni, H.K. Pharasi, S. Vijayaraghavan, S. Kumar, A. Chakraborti*, A. Samal*</div>
+                        <div class="pub-title">Investigation of Indian stock markets using topological data analysis and geometry-inspired network measures</div>
+                        <div class="pub-journal">Physica A, 643: 129785 (2024)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">M. Mondal, A. Samal*, F. Münch* & J. Jost*</div>
+                        <div class="pub-title">Bakry-Émery-Ricci curvature: An alternative network geometry measure in the expanding toolbox of graph Ricci curvatures</div>
+                        <div class="pub-journal">Journal of Complex Networks, 12(3): cnae019 (2024)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">P. Sil#, A. Subbaroyan#, S. Kulkarni, O.C. Martin* & A. Samal*</div>
+                        <div class="pub-title">Biologically meaningful regulatory logic enhances the convergence rate in Boolean networks and bushiness of their state transition graph</div>
+                        <div class="pub-journal">Briefings in Bioinformatics, 25(3): bbae150 (2024)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">S. Mitra#, P. Sil#, A. Subbaroyan#, O.C. Martin* & A. Samal*</div>
+                        <div class="pub-title">Preponderance of generalized chain functions in reconstructed Boolean models of biological networks</div>
+                        <div class="pub-journal">Scientific Reports, 14: 6734 (2024)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">S. Vijayaraghavan, A. Lakshminarayanan, N. Bhargava, J. Ravichandran, R.P. Vivek-Ananth* & A. Samal*</div>
+                        <div class="pub-title">Machine learning models for prediction of xenobiotic chemicals with high propensity to transfer into human milk</div>
+                        <div class="pub-journal">ACS Omega, 9(11): 13006-13016 (2024)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A.K. Sahoo#, N. Chivukula#, K. Ramesh, J. Singha, S.R. Marigoudar, K.V. Sharma, A. Samal*</div>
+                        <div class="pub-title">An integrative data-centric approach to derivation and characterization of an adverse outcome pathway network for plastic additives and associated chemicals</div>
+                        <div class="pub-journal">Environment International, 920: 170968 (2024)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">J. Kulkarni, S.A. Sahoo, P. Herzyk, V.T. Banakar, S.A. Kumar, J. Ravichandran, A. Samal, A. Amtmann, M. Borde, P. Suprasanna, A.K. Srivastava</div>
+                        <div class="pub-title">Early-responsive molecular signatures associated with halophytic adaptation in Sesamum portulaceastrum (L.)</div>
+                        <div class="pub-journal">Plant, Cell & Environment, 47: 961-975 (2024). DOI: 10.1111/pce.14767</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to SesamumKB</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">N. Chivukula, K. Ramesh, A. Subbaroyan, A.K. Sahoo, G.B. Dhanakoti, J. Ravichandran, A. Samal*</div>
+                        <div class="pub-title">VICEkb: Viraligo-linked Chemical Exposome Knowledgebase</div>
+                        <div class="pub-journal">Science of The Total Environment, 913: 169711 (2024)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to VICEkb</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2023 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2023</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">S.P. Baskaran#, A.K. Sahoo#, N. Chivukula, K. Kumar & A. Samal*</div>
+                        <div class="pub-title">Chemoinformatics analysis of multi-target structure-activity landscape of environmental chemicals binding to human endocrine receptors</div>
+                        <div class="pub-journal">ACS Omega, 8: 49383-49395 (2023). DOI: 10.1021/acsomega.3c.07920</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">B. Malakar, K. Chauhan, P. Sanyal, S. Naz, H. Kalam, R.P. Vivek-Ananth, L.V. Singh, A. Samal, D. Kumar*, V.K. Nandicoori*</div>
+                        <div class="pub-title">Phosphorylation of CFP10 modulates Mycobacterium tuberculosis virulence</div>
+                        <div class="pub-journal">mBio, 4: e01232-23 (2023)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A.K. Sahoo, R. P. Vivek-Ananth, N. Chivukula, S.V. Rajaram, K. Mohanarj, D. Khare, C. Acharya & A. Samal*</div>
+                        <div class="pub-title">T9Predict: A Comprehensive Computational Tool for the Prediction of Type 9 Secretion Signal Peptide Substrates</div>
+                        <div class="pub-journal">ACS Omega, 8(37): 33410-34022 (2023)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to T9Predict</a>
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A.K. Sahoo#, S.P. Baskaran#, N. Chivukula, K. Kumar & A. Samal*</div>
+                        <div class="pub-title">Analysis of structure-activity and structure-mechanism relationships among thyroid stimulating hormone receptor binding chemicals leveraging the ToxCast library</div>
+                        <div class="pub-journal">RSC Advances, 13: 23461-23471 (2023)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">I. Muralitharan#, A.K. Sahoo#, P.D. Augusthian & A. Samal*</div>
+                        <div class="pub-title">Computational prediction of phytochemical inhibitors against the cap-binding domain of Rift Valley fever virus</div>
+                        <div class="pub-journal">Molecular Diversity (2023) DOI: 10.1007/s11030-023-10702-4</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">Y. Yadav, P. Elumalai, N. Williams, J. Jost & A. Samal*</div>
+                        <div class="pub-title">Discrete Ricci curvatures capture age-related changes in human brain functional connectivity networks</div>
+                        <div class="pub-journal">Frontiers in Aging Neuroscience, 15: 1120846 (2023)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Subbaroyan, P. Sil, O.C. Martin* & A. Samal*</div>
+                        <div class="pub-title">Leveraging Developmental Landscapes for Model Selection in Boolean Gene Regulatory Networks</div>
+                        <div class="pub-journal">Briefings in Bioinformatics, bbad011 (2023)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Natarajan#, N. Chivukula#, G.B. Dhanakoti, A.K. Sahoo, J. Ravichandran* & A. Samal*</div>
+                        <div class="pub-title">EPEK: creation and analysis of an Ectopic Pregnancy Expression Knowledgebase</div>
+                        <div class="pub-journal">Computational Biology and Chemistry, 104: 107866 (2023)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to EPEK</a>
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R. P. Vivek-Ananth, K. Mohanarj, A.K. Sahoo & A. Samal*</div>
+                        <div class="pub-title">IMPPAT 2.0: An Enhanced and Expanded Phytochemical Atlas of Indian Medicinal Plants</div>
+                        <div class="pub-journal">ACS Omega, 8: 8827-8845 (2023)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to IMPPAT 2.0</a>
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Vivek-Ananth#, A.K. Sahoo#, S.P. Baskaran, J. Ravichandran & A. Samal*</div>
+                        <div class="pub-title">Identification of activity cliffs in structure-activity landscape of androgen receptor binding chemicals</div>
+                        <div class="pub-journal">Science of the Total Environment, 873: 162263 (2023)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A.K. Sahoo, P.D. Augusthian, I. Muralitharan, R. P. Vivek-Ananth, K. Kumar, G. Kumar, G. Ranganathan & A. Samal*</div>
+                        <div class="pub-title">In silico identification of potential inhibitors of vital monkeypox virus proteins from FDA approved drugs</div>
+                        <div class="pub-journal">Molecular Diversity, 27: 2383-2184 (2023)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Vivek-Ananth, A.K. Sahoo, S.P. Baskaran & A. Samal*</div>
+                        <div class="pub-title">Scaffold and structural diversity of the secondary metabolite space of medicinal fungi</div>
+                        <div class="pub-journal">ACS Omega, 8: 3102-3113 (2023)</div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>The Hindu SCI-TECH: <a href="#">Medicinal fungi may be suitable for identifying novel drugs</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2022 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2022</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">Y. Yadav#, A. Subbaroyan#, O.C. Martin* & A. Samal*</div>
+                        <div class="pub-title">Relative importance of composition structures and biologically meaningful logics in bipartite Boolean models of gene regulation</div>
+                        <div class="pub-journal">Scientific Reports, 12: 18156 (2022)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">P. Elumalai#, Y. Yadav#, N. Williams*, E. Saucan, J. Jost & A. Samal*</div>
+                        <div class="pub-title">Graph Ricci Curvatures Reveal Atypical Functional Connectivity in Autism Spectrum Disorder</div>
+                        <div class="pub-journal">Scientific Reports, 12: 8537 (2022)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Subbaroyan, O.C. Martin* & A. Samal*</div>
+                        <div class="pub-title">Minimum complexity drives regulatory logic in Boolean models of living systems</div>
+                        <div class="pub-journal">PNAS Nexus, 1(1): pgac017 (2022)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>IIT Madras Shaastra Magazine: <a href="#">Nature likes it simple! A new study underlines biology's preference for minimal complexity</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Subbaroyan, O.C. Martin* & A. Samal*</div>
+                        <div class="pub-title">A preference for Link Operator Functions can drive Boolean biological networks towards critical dynamics</div>
+                        <div class="pub-journal">Journal of Biosciences, 47: 17 (2022)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">J. Ravichandran#, B.S. Karthikeyan# & A. Samal*</div>
+                        <div class="pub-title">Investigation of a derived adverse outcome pathway (AOP) network for endocrine-mediated perturbations</div>
+                        <div class="pub-journal">Science of the Total Environment, 826: 154112 (2022)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Vivek-Ananth#, A.K. Sahoo, A. Srivastava* & A. Samal*</div>
+                        <div class="pub-title">Virtual screening of phytochemicals from Indian medicinal plants against the endoribonuclease domain of SFTS virus L polymerase</div>
+                        <div class="pub-journal">RSC Advances, 12: 6247-6247 (2022)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">Y. Yadav, A. Samal & E. Saucan*</div>
+                        <div class="pub-title">A Fortet-Based Approach to Curvature of Hypergraphs</div>
+                        <div class="pub-journal">Symmetry, 14(2): 420 (2022)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Vivek-Ananth, S. Krishnaswamy* & A. Samal*</div>
+                        <div class="pub-title">Potential phytochemical inhibitors of SARS-CoV-2 helicase Nsp13: a molecular docking and dynamic simulation study</div>
+                        <div class="pub-journal">Molecular Diversity, 26: 429-442 (2022)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">J. Ravichandran#, B.S. Karthikeyan#, S.R. Aparna & A. Samal*</div>
+                        <div class="pub-title">An atlas of fragrance chemicals in children's products</div>
+                        <div class="pub-journal">Science of the Total Environment, 818: 151682 (2022)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to FCCP</a>
+                        </div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>Indian Chemical Regulation: <a href="#">A database of fragrance chemicals found in children's products reveals information gaps</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2021 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2021</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">J. Ravichandran#, B.S. Karthikeyan#, S.R. Aparna & A. Samal*</div>
+                        <div class="pub-title">Network biology approach to human tissue-specific chemical exposome</div>
+                        <div class="pub-journal">The Journal of Steroid Biochemistry and Molecular Biology, 214: 105998 (2021)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to TEAAs</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">C. Aguilar, S. Costa, C. Maudet, R.P. Vivek-Ananth, S. Zaldivar-López, J.J. Garrido, A. Samal, M. Mano & A. Eulalio*</div>
+                        <div class="pub-title">Reprogramming of microRNA expression via E2F1 downregulation promotes Salmonella infection both in infected and bystander cells</div>
+                        <div class="pub-journal">Nature Communications, 12: 3392 (2021)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">J. Ravichandran#, B.S. Karthikeyan#, P. Singla, S.R. Aparna & A. Samal*</div>
+                        <div class="pub-title">NeurotoXb 1.0: compilation, curation and exploration of a knowledgebase of environmental neurotoxicants specific to mammals</div>
+                        <div class="pub-journal">Chemosphere, 278: 130387 (2021)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to NeurotoXb</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">B.S. Karthikeyan#, J. Ravichandran#, S.R. Aparna & A. Samal*</div>
+                        <div class="pub-title">ExHuMId: A curated resource and analysis of Exposure of Human Milk across India</div>
+                        <div class="pub-journal">Chemosphere, 271: 129583 (2021)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to ExHuMId</a>
+                        </div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>Nature India: <a href="#">An online repository of breast milk contaminants</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Vivek-Ananth#, A.K. Sahoo#, K. Kumaravel#, K. Mohanarj & A. Samal*</div>
+                        <div class="pub-title">MeFSAT: A curated natural product database specific to secondary metabolites of medicinal fungi</div>
+                        <div class="pub-journal">RSC Advances, 11: 2596-2607 (2021)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to MeFSAT</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal*, S. Kumar, Y. Yadav & A. Chakraborti*</div>
+                        <div class="pub-title">Network-centric indicators for fragility in global financial indices</div>
+                        <div class="pub-journal">Frontiers in Physics, 8: 624373 (2021)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository 1</a>
+                            <a href="#" class="pub-link">GitHub Repository 2</a>
+                        </div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>Max Planck Society News: <a href="#">Early warning of market bubbles</a></p>
+                            <p>ScienceDaily: <a href="#">Its curvature foreshadows the next financial bubble</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal#, H.K. Pharasi#, S.J. Ramaia, H. Kannan, E. Saucan, J. Jost & A. Chakraborti*</div>
+                        <div class="pub-title">Network geometry and market instability</div>
+                        <div class="pub-journal">Royal Society Open Science, 8: 201734 (2021)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository 1</a>
+                            <a href="#" class="pub-link">GitHub Repository 2</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">B.S. Karthikeyan#, J. Ravichandran#, S.R. Aparna & A. Samal*</div>
+                        <div class="pub-title">DEDuCT 2.0: An updated knowledgebase and an exploratory analysis of the current regulations and guidelines from the perspective of endocrine disrupting chemicals</div>
+                        <div class="pub-journal">Chemosphere, 267: 128898 (2021)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to DEDuCT 2.0</a>
+                        </div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>ChemicalWatch: <a href="#">Indian team expands database of potential endocrine disrupting chemicals</a></p>
+                            <p>INCI Beauty: <a href="#">DEDuCT: la base des perturbateurs endocriniens</a></p>
+                            <p>European Trade Union Institute: <a href="#">New online database for identifying endocrine disruptors</a></p>
+                            <p>c&en: <a href="#">Database of endocrine disruptors focuses on experimental evidence</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">E. Saucan*, A. Samal & J. Jost</div>
+                        <div class="pub-title">A Simple Differential Geometry for Complex Networks</div>
+                        <div class="pub-journal">Network Science, 9(S1): S106-S133 (2021)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2020 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2020</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">M. Edi, A. Farzam, W. Leal, A. Samal & J. Jost*</div>
+                        <div class="pub-title">Edge-based analysis of networks: Curvatures of graphs and hypergraphs</div>
+                        <div class="pub-journal">Theory in Biosciences, 139: 337-348 (2020)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Farzam*, A. Samal* & J. Jost*</div>
+                        <div class="pub-title">Degree difference: A simple measure to characterize structural heterogeneity in complex networks</div>
+                        <div class="pub-journal">Scientific Reports, 10: 21348 (2020)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Vivek-Ananth, A. Rana, N. Rajan, H.S. Biswal* & A. Samal*</div>
+                        <div class="pub-title">In Silico Identification of Potential Natural Product Inhibitors of Human Proteases Key to SARS-CoV-2 Infection</div>
+                        <div class="pub-journal">Molecules, 25(17): 3822 (2020)</div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>Dinamalar Paththi: சிறுநீரகம் கடின@...</p>
+                            <p>Times of India: <a href="#">NISER study identifies plant compound that may cure Covid</a></p>
+                            <p>Prameya News: <a href="#">Scientists from NISER, IMSc identify phytochemicals 'potential drug candidates' for COVID-19 treatment</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">I. Roy*, S. Vijayaraghavan, S.J. Ramaia & A. Samal*</div>
+                        <div class="pub-title">Forman-Ricci curvature and Persistent homology of unweighted complex networks</div>
+                        <div class="pub-journal">Chaos, Solitons & Fractals, 140: 110260 (2020)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2019 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2019</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">E. Saucan*, A. Samal & J. Jost</div>
+                        <div class="pub-title">A Simple Differential Geometry for Networks and Its Generalizations</div>
+                        <div class="pub-journal">In: H. Cherifi, S. Gaito, J. Mendes, E. Moro, L. Rocha (Eds) Complex Networks and Their Applications VII. COMPLEX NETWORKS 2018. Studies in Computational Intelligence, vol 812. Springer</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">M.A.C. Horta, N. Thieme, Y. Gao, K.E. Burnum-Johnson, C.D. Nicora, M.A. Gritsenko, M.S. Lipton, K. Mohanarj, L.J. de Assis, L. Lin, C. Tan, G.H. Braus, K.A. Borkovich, M. Schmoll, L.F. Larrondo, A. Samal, G.H. Goldman & J. P. Benz*</div>
+                        <div class="pub-title">Broad substrate-specific phosphorylation events are associated with the initial stage of plant cell wall recognition in Neurospora crassa</div>
+                        <div class="pub-journal">Frontiers in Microbiology, 10: 2317 (2019)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">B.S. Karthikeyan#, J. Ravichandran#, K. Mohanarj, R.P. Vivek-Ananth & A. Samal*</div>
+                        <div class="pub-title">A curated knowledgebase on endocrine disrupting chemicals and their biological systems-level perturbations</div>
+                        <div class="pub-journal">Science of the Total Environment, 692: 281-296 (2019)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to DEDuCT</a>
+                        </div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>Hindustan Times: <a href="#">Now, a database of harmful chemicals in everyday items</a></p>
+                            <p>India Science Wire: <a href="#">Indian scientists develop database of everyday chemicals harmful to human health</a></p>
+                            <p>ChemicalWatch: <a href="#">Indian team identifies hundreds of potential EDCs from literature</a></p>
+                            <p>European Trade Union Institute: <a href="#">New online database for identifying endocrine disruptors</a></p>
+                            <p>c&en: <a href="#">Database of endocrine disruptors focuses on experimental evidence</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">H. Kannan, E. Saucan, I. Roy* & A. Samal*</div>
+                        <div class="pub-title">Persistent homology of unweighted complex networks via discrete Morse theory</div>
+                        <div class="pub-journal">Scientific Reports 9: 13817 (2019)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">C. Torrini, R.J. Cubero, E. Dirkx, L. Braga, M. Ali, G. Prosdocimo, M.J. Gutierrez, C. Collesi, D. Licastro, M. Zentilin, M. Mano, S. Zacchigna, M. Vendruscolo, M. Marsili, A. Samal & M. Giacca*</div>
+                        <div class="pub-title">Common regulatory pathways mediate activity of microRNAs inducing cardiomyocyte proliferation</div>
+                        <div class="pub-journal">Cell Reports, 27(9): 2759-2771 (2019)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">E. Saucan, R.P. Sreejith, R.P. Vivek-Ananth, J. Jost & A. Samal*</div>
+                        <div class="pub-title">Discrete Ricci curvatures for directed networks</div>
+                        <div class="pub-journal">Chaos, Solitons & Fractals, 118: 347-360 (2019)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2018 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2018</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">E. Saucan, A. Samal, M. Weber & J. Jost*</div>
+                        <div class="pub-title">Discrete curvatures and network analysis</div>
+                        <div class="pub-journal">MATCH Communications in Mathematical and in Computer Chemistry, 80(3): 605-622 (2018)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal#, R.P. Sreejith#, J. Gu, S. Liu, E. Saucan* & J. Jost*</div>
+                        <div class="pub-title">Comparative analysis of two discretizations of Ricci curvature for complex networks</div>
+                        <div class="pub-journal">Scientific Reports 8: 8650 (2018)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository 1</a>
+                            <a href="#" class="pub-link">GitHub Repository 2</a>
+                        </div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>Max Planck Society News: <a href="#">Meaningful relationships - mathematical insights into the geometry of complex networks</a></p>
+                            <p>IDW News: <a href="#">Meaningful relationships - mathematical insights into the geometry of complex networks</a></p>
+                            <p>Nature India: <a href="#">How geometry helps understand networks better</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Vivek-Ananth, K. Mohanarj, M. Vandrashree, A. Jhingran, J.P. Craig & A. Samal*</div>
+                        <div class="pub-title">Comparative systems analysis of the secretome of the opportunistic pathogen Aspergillus fumigatus and other Aspergillus species</div>
+                        <div class="pub-journal">Scientific Reports 8: 6617 (2018)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to ASPERTOME</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">K. Mohanarj#, B.S. Karthikeyan#, R.P. Vivek-Ananth#, R.P. Bharath Chand, S.R. Aparna, P. Mangalapandi & A. Samal*</div>
+                        <div class="pub-title">IMPPAT: A curated database of Indian Medicinal Plants, Phytochemistry and Therapeutics</div>
+                        <div class="pub-journal">Scientific Reports 8: 4329 (2018)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">Link to IMPPAT</a>
+                        </div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>Hindustan Times: <a href="#">Indian plants may hold gateway to new drugs</a></p>
+                            <p>Nature India: <a href="#">Phytochemical database raises hopes for herbal drugs</a></p>
+                            <p>The Hindu: <a href="#">A knowledge hub for medicinal plants</a></p>
+                            <p>India Science Wire: <a href="#">New database on Indian medicinal plants may ease drug discovery</a></p>
+                            <p>Down to Earth: <a href="#">New database finds 940 new druggable components in Indian medicinal plants</a></p>
+                            <p>Researchsea: <a href="#">New database on Indian medicinal plants may ease drug discovery</a></p>
+                            <p>Biotech News: <a href="#">New database on Indian medicinal plants may ease drug discovery</a></p>
+                            <p>Biovice News: <a href="#">Fresh database on Indian medicinal plants may ease drug discovery</a></p>
+                            <p>Dinamalar Paththi: 1742 சிறுநீரக குறைபாடுகள் இந்திய மருந்து தாவரங்களில் கண்டுபிடிக்கப்பட்டுள்ளன</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2017 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2017</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">S. Venkatesan#, R.P. Vivek-Ananth#, R.P. Sreejith, P. Mangalapandi, A.A. Hassanali* & A. Samal*</div>
+                        <div class="pub-title">Network approach towards understanding the crazing in glassy amorphous polymers</div>
+                        <div class="pub-journal">Journal of Statistical Mechanics: Theory and Experiment 043305 (2018)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository 1</a>
+                            <a href="#" class="pub-link">GitHub Repository 2</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal* & O.C. Martin*</div>
+                        <div class="pub-title">Haldane, Waddington and recombinant inbred lines: extension of their work to any number of genes</div>
+                        <div class="pub-journal">Journal of Genetics, 96(5): 795-800 (2017)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal, J.P. Craig, S.T. Coradetti#, J.P. Benz#, J.A. Eddy, N.D. Price* & N.L. Glass*</div>
+                        <div class="pub-title">Network Reconstruction And Systems Analysis Of Plant Cell Wall Deconstruction By Neurospora crassa</div>
+                        <div class="pub-journal">Biotechnology for Biofuels, 10: 225 (2017)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Sreejith, J. Jost, E. Saucan & A. Samal*</div>
+                        <div class="pub-title">Systematic evaluation of a new combinatorial curvature for complex networks</div>
+                        <div class="pub-journal">Chaos, Solitons & Fractals, 101: 50-67 (2017)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2016 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2016</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Vivek-Ananth & A. Samal*</div>
+                        <div class="pub-title">Advances in the integration of transcriptional regulatory information into genome-scale metabolic models</div>
+                        <div class="pub-journal">Biosystems 147: 1-10 (2016)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">R.P. Sreejith, K. Mohanarj, J. Jost, E. Saucan & A. Samal*</div>
+                        <div class="pub-title">Forman curvature for complex networks</div>
+                        <div class="pub-journal">Journal of Statistical Mechanics: Theory and Experiment 063206 (2016)</div>
+                        <div class="pub-links">
+                            <a href="#" class="pub-link">GitHub Repository 1</a>
+                            <a href="#" class="pub-link">GitHub Repository 2</a>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">G.D. Jhingran#, S. Kumar#, S.V. Jamwal, H. Kalam, D. Arora, N. Jain, L. KrishnaKumari, A. Samal, K.V.S. Rao, D. Kumar & V.K. Nandicoori*</div>
+                        <div class="pub-title">Comparative proteomic analyses of avirulent, virulent and clinical strains of Mycobacterium tuberculosis identifies strain-specific patterns</div>
+                        <div class="pub-journal">Journal of Biological Chemistry 291: 14257-14273 (2016)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">J.X. Zhou#, A. Samal#, A.F. d'Hérouël, N.D. Price & S. Huang*</div>
+                        <div class="pub-title">Relative Stability of Network States in Boolean Network Models of Gene Regulation in Development</div>
+                        <div class="pub-journal">Biosystems 142: 15-24 (2016)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2015 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2015</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">M. Bardoscia, M. Marsili & A. Samal*</div>
+                        <div class="pub-title">Phenotypic constraints promote latent versatility and carbon efficiency in metabolic networks</div>
+                        <div class="pub-journal">Physical Review E 92: 012809 (2015)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal & O.C. Martin*</div>
+                        <div class="pub-title">Statistical physics methods provide the exact solution to a long-standing problem of genetics</div>
+                        <div class="pub-journal">Physical Review Letters, 114: 238101 (2015). – Editors' suggestion article</div>
+                        <div class="coverage-box">
+                            <h4>Coverage in:</h4>
+                            <p>Physics Today: <a href="#">Gauging genetic odds after repeated inbreeding</a></p>
+                            <p>ICTP: <a href="#">A Matter of (in)Breeding</a></p>
+                            <p>INRA: <a href="#">L'agrées recombinantes: quand la physique théorique aide à résoudre un vieux problème de génétique</a></p>
+                        </div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">S. Kumar, M. Vendruscolo, A. Singh, D. Kumar & A. Samal*</div>
+                        <div class="pub-title">Analysis of the hierarchical structure of the B. subtilis transcriptional regulatory network</div>
+                        <div class="pub-journal">Molecular Biosystems, 11: 930-941 (2015)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2013 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2013</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal & O.C. Martin*</div>
+                        <div class="pub-title">Shining fresh light on the evolution of photosynthesis</div>
+                        <div class="pub-journal">eLife, 2: e01403 (2013)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Henry, F. Moneger, A. Samal* & O.C. Martin*</div>
+                        <div class="pub-title">Network function shapes network structure: the case of the Arabidopsis flower organ specification genetic network</div>
+                        <div class="pub-journal">Molecular Biosystems, 9(7): 1726-1735 (2013)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">S. Singh, A. Samal, V. Giri, S. Krishna, N. Raghuram & S. Jain*</div>
+                        <div class="pub-title">Flux-based classification of reactions reveals a functional bow-tie organization of complex metabolic networks</div>
+                        <div class="pub-journal">Physical Review E, 87: 052708 (2013)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2012 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2012</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">Q. Ren*, K.M. Kowanlar, A. Samal & J. Jost</div>
+                        <div class="pub-title">Hopf bifurcation in the evolution of networks driven by spike-timing-dependent plasticity</div>
+                        <div class="pub-journal">Physical Review E, 86: 056103 (2012)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2011 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2011</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal, A. Wagner* & O.C. Martin*</div>
+                        <div class="pub-title">Environmental versatility promotes modularity in genome-scale metabolic networks</div>
+                        <div class="pub-journal">BMC Systems Biology, 5: 135 (2011). – Highly accessed article</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal & O.C. Martin*</div>
+                        <div class="pub-title">Randomizing genome-scale metabolic networks</div>
+                        <div class="pub-journal">PLoS ONE, 6(7): e22295 (2011)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">D. Perumal, A. Samal, K.R. Sakharkar & M.K. Sakharkar*</div>
+                        <div class="pub-title">Targeting Multiple Targets in Pseudomonas aeruginosa PAO1 using Flux Balance Analysis of a Reconstructed Genome-scale Metabolic Network</div>
+                        <div class="pub-journal">Journal of Drug Targeting, 19(1): 1-13 (2011)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2010 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2010</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">P.-Y. Bourguignon, A. Samal, F. Képès, J. Jost* & O.C. Martin*</div>
+                        <div class="pub-title">Challenges in experimental data integration within genome-scale metabolic models</div>
+                        <div class="pub-journal">Algorithms for Molecular Biology, 5: 20 (2010). – Highly accessed article</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">D. Perumal, K.R. Sakharkar, I.H. Tang, V.T.K. Chow, C.S. Lim, A. Samal, N. Suguna & M.K. Sakharkar*</div>
+                        <div class="pub-title">Cloning and Targeted Disruption of Two Lipopolysaccharide Biosynthesis Genes, kdsA and kdsC, of Pseudomonas aeruginosa PAO1 by Site-Directed Mutagenesis</div>
+                        <div class="pub-journal">Journal of Molecular Microbiology and Biotechnology, 19(1): 169-179 (2010)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">Q. Ren, K.M. Kowanlar*, A. Samal & J. Jost</div>
+                        <div class="pub-title">STDP-driven networks and C. elegans neuronal network</div>
+                        <div class="pub-journal">Physica A, 389(15): 3900-3914 (2010)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal, J.F. Matias Rodrigues, J. Jost, O.C. Martin* & A. Wagner*</div>
+                        <div class="pub-title">Genotype networks in metabolic reaction spaces</div>
+                        <div class="pub-journal">BMC Systems Biology, 4: 30 (2010). – Highly accessed article</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2009 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2009</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal & H. Meyer-Ortmanns*</div>
+                        <div class="pub-title">Preferential attachment renders an evolving network of populations robust against crashes</div>
+                        <div class="pub-journal">Physica A, 388(8): 1535-1545 (2009)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2008 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2008</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal*</div>
+                        <div class="pub-title">Conservation of high-flux backbone in alternate optimal and near-optimal flux distributions of metabolic networks</div>
+                        <div class="pub-journal">Systems and Synthetic Biology, 2: 83-93 (2008)</div>
+                    </div>
+
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal & S. Jain*</div>
+                        <div class="pub-title">The regulatory network of E. coli metabolism as a Boolean dynamical system exhibits both homeostasis and flexibility of response</div>
+                        <div class="pub-journal">BMC Systems Biology, 2: 21 (2008). – Highly accessed article</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2007 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2007</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">S. Singh, A. Samal, V. Giri, S. Krishna, N. Raghuram & S. Jain*</div>
+                        <div class="pub-title">A universal power law and proportionate change process characterize the evolution of metabolic networks</div>
+                        <div class="pub-journal">Eur. Phys. J. B, 57: 75-80 (2007)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2006 -->
+        <div class="year-section">
+            <div class="year-header" onclick="toggleYear(this)">
+                <div class="year-circle"></div>
+                <h2 class="year-title">2006</h2>
+            </div>
+            <div class="year-content">
+                <div class="year-content-inner">
+                    <div class="publication-card">
+                        <div class="pub-authors">A. Samal, S. Singh, V. Giri, S. Krishna, N. Raghuram & S. Jain*</div>
+                        <div class="pub-title">Low degree metabolites explain essential reactions and enhance modularity in biological networks</div>
+                        <div class="pub-journal">BMC Bioinformatics, 7: 118 (2006). – Highly accessed article</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PhD Thesis -->
+        <div class="thesis-section">
+            <h3>PhD Thesis</h3>
+            <div class="publication-card" style="border-left-color: #764ba2;">
+                <div class="pub-authors">A. Samal</div>
+                <div class="pub-title">Study of the structure and dynamics of the complex biological networks</div>
+                <div class="pub-journal">University of Delhi, India (2008). (Available at Arxiv:0812.5094)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <p>The Institute of Mathematical Sciences Chennai 600113, India</p>
+            <p>Email: areejit@imsc.res.in</p>
+            <h4>Copyright ©2025 ASLab - All rights reserved</h4>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById("navLinks").classList.toggle("active");
+        }
+
+        function toggleYear(header) {
+            const circle = header.querySelector('.year-circle');
+            const content = header.nextElementSibling;
+            
+            circle.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
